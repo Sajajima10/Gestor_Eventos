@@ -9,6 +9,8 @@ class Data_Manager:
         self.file_path = file_path
         self.resorces = {}
         self.events = []
+        self.rules = {}
+
         self.load_data()
     
     def load_data(self):
@@ -28,6 +30,9 @@ class Data_Manager:
                 event = Event(ev['id'], ev['name'], start, end, ev['resources'])
 
                 self.events.append(event)
+        
+        with open(self.file_rules, 'r', encoding = 'utf-8') as rules:
+            self.rules = json.load(rules)
 
 
 

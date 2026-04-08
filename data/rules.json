@@ -1,0 +1,147 @@
+{
+  "inclusion_rules": [
+    {
+      "name": "Seguridad Nuclear",
+      "triggers": ["01", "02", "06"],
+      "required": ["13", "14"],
+      "message": "Instalaciones críticas (01, 02, 06) requieren supervisión de Seguridad Nuclear (13 o 14)."
+    },
+    {
+      "name": "Supervisión Criogénica",
+      "triggers": ["04", "31", "35", "50"],
+      "required": ["15"],
+      "message": "Operaciones con frío extremo requieren al Técnico Roberto (15) en el sitio."
+    },
+    {
+      "name": "Mantenimiento de Sistemas",
+      "triggers": ["21", "22", "46"],
+      "required": ["16"],
+      "message": "El uso de Súper Computadores o Servidores requiere a la Téc. Lucía (16)."
+    },
+    {
+      "name": "Blindaje Obligatorio",
+      "triggers": ["07", "32"],
+      "required": ["34", "38"],
+      "message": "El manejo de Isótopos o Tritio requiere Blindaje de Plomo (34) y Escáner de Radiación (38)."
+    },
+    {
+      "name": "Protección de Personal",
+      "triggers": ["06", "07"],
+      "required": ["44", "45"],
+      "message": "Áreas de radiación ionizante requieren Trajes de Protección (44 o 45)."
+    },
+    {
+      "name": "Vacío de Alta Potencia",
+      "triggers": ["03"],
+      "required": ["48"],
+      "message": "La Cámara de Vacío Cuántico requiere la activación de la Bomba de Vacío Industrial (48)."
+    },
+    {
+      "name": "Telemetría de Drones",
+      "triggers": ["43"],
+      "required": ["29", "18"],
+      "message": "El uso del Dron requiere el Módulo de Telemetría (29) y a la Ing. Sofía (18)."
+    },
+    {
+      "name": "Precisión Biomédica",
+      "triggers": ["19"],
+      "required": ["05", "24"],
+      "message": "Investigación Biofísica requiere el Cuarto Limpio (05) y el Microscopio Electrónico (24)."
+    },
+    {
+      "name": "Estabilidad Magnética",
+      "triggers": ["28"],
+      "required": ["40", "12"],
+      "message": "El Generador de Campo Magnético requiere la Cámara Térmica (40) y a la Dra. Elara (12)."
+    },
+    {
+      "name": "Protocolo de Energía",
+      "triggers": ["33"],
+      "required": ["49"],
+      "message": "La Batería de Grafeno (1MW) requiere tener el Generador Diesel (49) en standby por seguridad."
+    },
+    {
+      "name": "Almacenamiento de Datos",
+      "triggers": ["23", "27", "38", "39", "40"],
+      "required": ["46"],
+      "message": "Todo sensor de alta precisión requiere vinculación con el Servidor de Datos Críticos (46)."
+    }
+  ],
+  "exclusion_rules": [
+    {
+      "name": "Inestabilidad Térmica",
+      "resources": ["25", "31"],
+      "message": "PROHIBIDO: Uso simultáneo de Láser (25) y Helio Líquido (31) por riesgo de explosión."
+    },
+    {
+      "name": "Interferencia Magnética",
+      "resources": ["21", "28"],
+      "message": "PROHIBIDO: Súper Computador (21) y Campo Magnético (28) (Riesgo de corrupción de datos)."
+    },
+    {
+      "name": "Contaminación de Partículas",
+      "resources": ["05", "49"],
+      "message": "PROHIBIDO: El Generador Diesel (49) no puede operar cerca del Cuarto Limpio (05)."
+    },
+    {
+      "name": "Ruido Sensorial",
+      "resources": ["27", "28"],
+      "message": "PROHIBIDO: Sensor de Neutrinos (27) no puede operar cerca del Generador Magnético (28)."
+    },
+    {
+      "name": "Exclusividad de Control",
+      "resources": ["41", "42"],
+      "message": "PROHIBIDO: No se pueden asignar ambas Salas de Control (41, 42) al mismo evento."
+    },
+    {
+      "name": "Incompatibilidad Química",
+      "resources": ["32", "37"],
+      "message": "PROHIBIDO: El Tritio (32) no puede estar en contacto con el Kit Biológico (37)."
+    },
+    {
+      "name": "Vibración de Precisión",
+      "resources": ["23", "48"],
+      "message": "PROHIBIDO: El Espectrómetro (23) no tolera la vibración de la Bomba de Vacío Industrial (48)."
+    },
+    {
+      "name": "Sobrecarga Eléctrica",
+      "resources": ["21", "22"],
+      "message": "PROHIBIDO: El uso simultáneo de ambos Súper Computadores (21, 22) excedería la carga eléctrica."
+    },
+    {
+      "name": "Capacidad Crítica de Instalación",
+      "resources": ["01", "02", "06"],
+      "message": "FALLO DE RED: No se pueden activar dos instalaciones de potencia crítica (01, 02, 06) a la vez."
+    },
+    {
+      "name": "Conflicto de Personal",
+      "resources": ["11", "12"],
+      "message": "REGLA RRHH: El Dr. Arcas y la Dra. Elara no pueden ser asignados al mismo evento."
+    },
+    {
+      "name": "Interferencia Bio-Radiológica",
+      "resources": ["06", "19"],
+      "message": "PROHIBIDO: El Túnel de Partículas (06) interfiere con las muestras de Biofísica (19)."
+    }
+  ],
+  "category_rules": [
+    {
+      "category": "Personal",
+      "min_required": 1,
+      "message": "Error de personal: Todo evento debe incluir al menos un Investigador, Técnico o Oficial de Seguridad."
+    },
+    {
+      "category": "Instalación",
+      "min_required": 1,
+      "message": "Error de ubicación: Todo evento debe realizarse en una Instalación válida."
+    }
+  ],
+  "master_rules": {
+    "duration_threshold_hours": 4,
+    "duration_required_resources": ["41", "42"],
+    "duration_message": "Protocolo de Larga Duración: Eventos de más de 4 horas requieren una Sala de Control (41 o 42).",
+    "risk_trigger": "Crítico",
+    "risk_required_resource": "37",
+    "risk_message": "Alerta de Riesgo: Recursos de nivel 'Crítico' requieren obligatoriamente el Kit de Emergencia (37)."
+  }
+}
