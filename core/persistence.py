@@ -4,9 +4,10 @@ from core.models import Event, Resource
 
 class Data_Manager:
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, rules_path):
 
         self.file_path = file_path
+        self.rules_path = rules_path
         self.resorces = {}
         self.events = []
         self.rules = {}
@@ -31,7 +32,7 @@ class Data_Manager:
 
                 self.events.append(event)
         
-        with open(self.file_rules, 'r', encoding = 'utf-8') as rules:
+        with open(self.rules_path, 'r', encoding = 'utf-8') as rules:
             self.rules = json.load(rules)
 
 
