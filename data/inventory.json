@@ -40,9 +40,9 @@
     "35": {"name": "Unidad de Nitrógeno Líquido", "type": "Suministro", "state": "Criogénico"},
     "36": {"name": "Célula de Combustible Experimental", "type": "Suministro", "state": "Activo"},
     "37": {"name": "Kit de Emergencia Biológica", "type": "Suministro", "level": "4"},
-    "38": {"name": "Escáner de Radiación Portátil", "type": "Hardware", "type": "Medición"},
-    "39": {"name": "Osciloscopio Digital Terahertz", "type": "Hardware", "type": "Medición"},
-    "40": {"name": "Cámara Térmica de Alta Velocidad", "type": "Hardware", "type": "Medición"},
+    "38": {"name": "Escáner de Radiación Portátil", "type": "Hardware", "function": "Medición"},
+    "39": {"name": "Osciloscopio Digital Terahertz", "type": "Hardware", "function": "Medición"},
+    "40": {"name": "Cámara Térmica de Alta Velocidad", "type": "Hardware", "function": "Medición"},
 
     "41": {"name": "Sala de Control A", "type": "Instalación", "access": "Nivel 3"},
     "42": {"name": "Sala de Control B", "type": "Instalación", "access": "Nivel 3"},
