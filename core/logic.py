@@ -45,9 +45,31 @@ class Scheduled:
         for rule in self.db.rules['category_rules']:
             if tipos_seleccionados.count(rule['category']) < rule['min_required']:
                 raise ConstraintViolationError(rule['message'])
-    
+        
+        # Validar las Master Rules
+
+        master = self.db.rules['master_rules']
+
+        # 1. Duracion
+
+        duracion_horas = (end - start).total_seconds() / 3600
+        if duracion_horas > master['duration_threshold_hours']:
+            if not any(rid in resource_ids for rid in master['duration_required_resources']):
+                raise ConstraintViolationError(master['duration_message'])
+            
+        # 2. Riesgo Crítico
+
+        for rid in resource_ids:
+            recurso = self.db.resources[rid]
+            if recurso.attributes.get('risk_level') == master['risk_trigger']:
+                if master['risk_required_resource'] not in resource_ids:
+                    raise ConstraintViolationError(master['risk_message'])
+                
 
     def add_event(self, name, start, end, resource_ids):
+
+        if end <= start:
+            raise InvalidTimeIntervalError("La fecha de fin debe ser posterior a la de inicio.")
         
         self.check_availability(resource_ids,start,end)
         self.validate_rules(resource_ids, start, end)
