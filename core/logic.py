@@ -10,14 +10,14 @@ class Scheduled:
 
         self.db = data_manager
     
-    def check_availability(self, resources_ids, start, end):
+    def check_availability(self, resource_ids, start, end):
 
         for event in self.db.events:
 
             if(start < event.end and event.start < end):
 
-                for res_id in resources_ids:
-                    if(res_id in event.resources_ids):
+                for res_id in resource_ids:
+                    if(res_id in event.resource_ids):
                         
                         name = self.db.resources[res_id].name
 
@@ -26,6 +26,10 @@ class Scheduled:
                             f"siendo usado en el evento '{event.name}'.")
     
     def validate_rules(self, resource_ids, start, end):
+
+        for rid in resource_ids:
+            if rid not in self.db.resources:
+                raise ResourceNotFoundError(f"El recurso con ID '{rid}' no existe en el inventario.")
 
         #Validando Inclusiones
         for rule in self.db.rules['inclusion_rules']:
@@ -79,7 +83,7 @@ class Scheduled:
         new_event = Event(new_id, name, start, end, resource_ids)
 
         self.db.events.append(new_event)
-        self.db.save_all_data()
+        self.db.save_all_data(self.db.events)
 
         return new_event
         

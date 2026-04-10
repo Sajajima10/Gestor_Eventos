@@ -25,8 +25,8 @@ class Data_Manager:
 
             for ev in data['planned_events']:
 
-                start = datetime.strptime(ev['start'], "%d-%m-%Y %H:%M:%S")
-                end = datetime.strptime(ev['end'], "%d-%m-%Y %H:%M:%S")
+                start = datetime.strptime(ev['start'], "%Y-%m-%d %H:%M:%S")
+                end = datetime.strptime(ev['end'], "%Y-%m-%d %H:%M:%S")
 
                 event = Event(ev['id'], ev['name'], start, end, ev['resources'])
 
@@ -60,8 +60,8 @@ class Data_Manager:
             event_dict = {
                 "id": ev.id,
                 "name": ev.name,
-                "start": ev.start.strftime("%d-%m-%Y %H:%M:%S"),
-                "end": ev.end.strftime("%d-%m-%Y %H:%M:%S"),
+                "start": ev.start.strftime("%Y-%m-%d %H:%M:%S"),
+                "end": ev.end.strftime("%Y-%m-%d %H:%M:%S"),
                 "resources": ev.resource_ids
             }
             output["planned_events"].append(event_dict)

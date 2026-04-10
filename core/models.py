@@ -1,13 +1,13 @@
 from datetime import datetime
 
 class Event:
-    def __init__(self, event_id, name, start, end, resources_ids):
+    def __init__(self, event_id, name, start, end, resource_ids):
 
         self.id = event_id
         self.name = name
         self.start = start
         self.end = end
-        self.ressources_id = resources_ids
+        self.resource_ids = resource_ids
 
     def duration(self):
 
@@ -18,12 +18,12 @@ class Event:
         return f"Evento: {self.name} Inicio: {self.start} Fin: {self.end}"
     
 class Resource:
-    def __init__(self, resource_id, name, type, other):
+    def __init__(self, resource_id, name, type, **kwargs):
 
         self.id = resource_id
         self.name = name
         self.type = type
-        self.attribute = other
+        self.attributes = kwargs
 
     def __str__(self):
         return f"ID: {self.id} Recurso: {self.name} Tipo: {self.type} Atributo: {self.attribute}"
