@@ -1,0 +1,22 @@
+{
+  "resources": {
+    "50": {
+      "name": "Sonda de Temperatura Profunda",
+      "type": "Hardware",
+      "range": "K"
+    }
+  },
+  "planned_events": [
+    {
+      "id": "EV-01",
+      "name": "Calibracion cuantica",
+      "start": "2025-06-01 09:00:00",
+      "end": "2025-06-01 11:00:00",
+      "resources": [
+        "05",
+        "11",
+        "24"
+      ]
+    }
+  ]
+}
