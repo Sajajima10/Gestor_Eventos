@@ -32,12 +32,25 @@ class Scheduled:
             if rid not in self.db.resources:
                 raise ResourceNotFoundError(f"El recurso con ID '{rid}' no existe en el inventario.")
 
-        #Validando Inclusiones
-        for rule in self.db.rules['inclusion_rules']:
-            has_trigger = any(rid in resource_ids for rid in rule['triggers'])
-            has_required = all(rid in resource_ids for rid in rule['required'])
-            if has_trigger and not has_required:
-                raise ConstraintViolationError(rule['message'])
+        # Validando Inclusiones
+        for rule in self.db.rules.get('inclusion_rules', []):
+            triggers = rule.get('triggers', [])
+            has_trigger = any(rid in resource_ids for rid in triggers)
+
+            if not has_trigger:
+                continue  # si no hay disparador, la regla no aplica
+
+            # Si la regla exige todos los recursos listados (required)
+            if 'required' in rule:
+                all_required = all(rid in resource_ids for rid in rule['required'])
+                if not all_required:
+                    raise ConstraintViolationError(rule['message'])
+
+            # Si la regla exige al menos uno de los recursos listados (required_any)
+            if 'required_any' in rule:
+                any_required = any(rid in resource_ids for rid in rule['required_any'])
+                if not any_required:
+                    raise ConstraintViolationError(rule['message'])
         
         #Validar Exclusiones Mutuas
         for rule in self.db.rules['exclusion_rules']:
@@ -116,3 +129,40 @@ class Scheduled:
                 return inicio_candidato
             except ResourceConflictError:
                 raise CIEAPlannerError("No se encontró ningún hueco disponible.")
+
+    def update_event(self, event_id, new_name, new_start, new_end, new_resource_ids):
+        # Buscar el evento original
+        original = None
+        for ev in self.db.events:
+            if ev.id == event_id:
+                original = ev
+                break
+        if original is None:
+            raise CIEAPlannerError(f"No existe ningún evento con ID {event_id}.")
+
+        # Validaciones de intervalo (sin auto-conflicto)
+        if new_end <= new_start:
+            raise InvalidTimeIntervalError("La fecha de fin debe ser posterior a la de inicio.")
+
+        # Quitamos el evento original temporalmente para que no se autoconflija
+        self.db.events.remove(original)
+
+        try:
+            # Validar disponibilidad y reglas con el nuevo estado
+            self.check_availability(new_resource_ids, new_start, new_end)
+            self.validate_rules(new_resource_ids, new_start, new_end)
+        except CIEAPlannerError as e:
+            # Reinsertar el original si algo falla
+            self.db.events.append(original)
+            raise e
+
+        # Actualizar datos del evento original
+        original.name = new_name
+        original.start = new_start
+        original.end = new_end
+        original.resource_ids = new_resource_ids
+
+        # Volver a añadir el evento ya modificado
+        self.db.events.append(original)
+        self.db.save_all_data(self.db.events)
+        return original

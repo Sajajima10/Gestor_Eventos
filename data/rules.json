@@ -3,7 +3,7 @@
     {
       "name": "Seguridad Nuclear",
       "triggers": ["01", "02", "06"],
-      "required": ["13", "14"],
+      "required_any": ["13", "14"],
       "message": "Instalaciones críticas (01, 02, 06) requieren supervisión de Seguridad Nuclear (13 o 14)."
     },
     {
@@ -27,7 +27,7 @@
     {
       "name": "Protección de Personal",
       "triggers": ["06", "07"],
-      "required": ["44", "45"],
+      "required_any": ["44", "45"],
       "message": "Áreas de radiación ionizante requieren Trajes de Protección (44 o 45)."
     },
     {
