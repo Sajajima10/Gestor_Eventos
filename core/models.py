@@ -26,4 +26,4 @@ class Resource:
         self.attributes = kwargs
 
     def __str__(self):
-        return f"ID: {self.id} Recurso: {self.name} Tipo: {self.type} Atributo: {self.attribute}"
+        return f"ID: {self.id} Recurso: {self.name} Tipo: {self.type} Atributo: {self.attributes}"

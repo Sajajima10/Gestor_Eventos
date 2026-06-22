@@ -1,6 +1,7 @@
 import json
 from core.models import Event, Resource
 from core.persistence import Data_Manager
+from datetime import datetime, timedelta
 from datetime import datetime
 from utils.error import CIEAPlannerError, ResourceConflictError, ResourceNotFoundError, ConstraintViolationError, DataPersistenceError, InvalidTimeIntervalError
 
@@ -34,14 +35,14 @@ class Scheduled:
         #Validando Inclusiones
         for rule in self.db.rules['inclusion_rules']:
             has_trigger = any(rid in resource_ids for rid in rule['triggers'])
-            has_required = any(rid in resource_ids for rid in rule['required'])
+            has_required = all(rid in resource_ids for rid in rule['required'])
             if has_trigger and not has_required:
                 raise ConstraintViolationError(rule['message'])
         
         #Validar Exclusiones Mutuas
         for rule in self.db.rules['exclusion_rules']:
             forbidden_count = sum(1 for rid in rule['resources'] if rid in resource_ids)
-            if forbidden_count == len(rule['resources']):
+            if forbidden_count > 1:
                 raise ConstraintViolationError(rule['message'])
 
         #Validar Categorías
@@ -78,7 +79,9 @@ class Scheduled:
         self.check_availability(resource_ids,start,end)
         self.validate_rules(resource_ids, start, end)
 
-        new_id = f"EV-{len(self.db.events) + 1:02d}"
+        existing_numbers = [int(ev.id.split('-')[1]) for ev in self.db.events]
+        new_number = max(existing_numbers, default=0) + 1
+        new_id = f"EV-{new_number:02d}"
 
         new_event = Event(new_id, name, start, end, resource_ids)
 
@@ -87,7 +90,29 @@ class Scheduled:
 
         return new_event
         
+    def find_next_gap(self, duration_hours, resource_ids):
+            eventos_relevantes = [
+                ev for ev in self.db.events
+                if any(rid in ev.resource_ids for rid in resource_ids)
+            ]
+            eventos_relevantes.sort(key=lambda ev: ev.start)
 
+            now = datetime.now()
+            duracion = timedelta(hours=duration_hours)
+            inicio_candidato = now
 
-    
+            for ev in eventos_relevantes:
+                if ev.start - inicio_candidato >= duracion:
+                    try:
+                        self.check_availability(resource_ids, inicio_candidato, inicio_candidato + duracion)
+                        return inicio_candidato
+                    except ResourceConflictError:
+                        pass
+                if ev.end > inicio_candidato:
+                    inicio_candidato = ev.end
 
+            try:
+                self.check_availability(resource_ids, inicio_candidato, inicio_candidato + duracion)
+                return inicio_candidato
+            except ResourceConflictError:
+                raise CIEAPlannerError("No se encontró ningún hueco disponible.")

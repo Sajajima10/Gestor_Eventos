@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from core.persistence import Data_Manager
-from core.logic import Scheduled # Asegúrate que el nombre coincida con tu clase
+from core.logic import Scheduled
 from utils.error import CIEAPlannerError
 
 def limpiar_pantalla():
@@ -18,8 +18,6 @@ def mostrar_menu():
     return input("Seleccione una opción: ")
 
 def main():
-    # 1. Inicialización
-    # Asegúrate de que las rutas sean correctas
     manager = Data_Manager("data/inventory.json", "data/rules.json")
     engine = Scheduled(manager)
 
@@ -31,7 +29,7 @@ def main():
             if not manager.events:
                 print("No hay eventos en el calendario.")
             for ev in manager.events:
-                print(ev) # Esto usa el __str__ que definimos en el modelo
+                print(ev)
 
         elif opcion == "2":
             print("\n--- NUEVO EVENTO ---")
@@ -39,20 +37,14 @@ def main():
             fecha_inicio = input("Inicio (YYYY-MM-DD HH:MM:SS): ")
             fecha_fin = input("Fin (YYYY-MM-DD HH:MM:SS): ")
             ids_str = input("IDs de recursos (separados por coma, ej: 01,13,25): ")
-            
-            # Procesar IDs
             ids = [i.strip().zfill(2) for i in ids_str.split(",")]
 
             try:
-                # Convertir strings a datetime
                 fmt = "%Y-%m-%d %H:%M:%S"
                 start_dt = datetime.strptime(fecha_inicio, fmt)
                 end_dt = datetime.strptime(fecha_fin, fmt)
-
-                # Intentar planificar
                 nuevo = engine.add_event(nombre, start_dt, end_dt, ids)
                 print(f"✅ ¡ÉXITO! Evento '{nuevo.name}' creado con ID {nuevo.id}")
-
             except CIEAPlannerError as e:
                 print(f"⚠️ ERROR DE PLANIFICACIÓN: {e}")
             except ValueError:
@@ -60,18 +52,24 @@ def main():
 
         elif opcion == "3":
             print("\n--- BUSCAR HUECO INTELIGENTE ---")
-            # Aquí podrías implementar la llamada a engine.find_next_gap
-            print("Funcionalidad en desarrollo... (requiere método find_next_gap)")
+            try:
+                duracion_h = float(input("Duración deseada (en horas): "))
+                ids_str = input("IDs de recursos necesarios (separados por coma, ej: 01,13,25): ")
+                ids = [i.strip().zfill(2) for i in ids_str.split(",")]
+                inicio_hueco = engine.find_next_gap(duracion_h, ids)
+                print(f"✅ Hueco encontrado: {inicio_hueco.strftime('%Y-%m-%d %H:%M:%S')}")
+            except CIEAPlannerError as e:
+                print(f"⚠️ {e}")
+            except ValueError:
+                print("❌ Entrada inválida (duración debe ser número, IDs formato correcto).")
 
         elif opcion == "4":
             ev_id = input("Ingrese el ID del evento a eliminar (ej: EV-01): ")
-            # Lógica simple de eliminación
             evento_encontrado = None
             for ev in manager.events:
                 if ev.id == ev_id:
                     evento_encontrado = ev
                     break
-            
             if evento_encontrado:
                 manager.events.remove(evento_encontrado)
                 manager.save_all_data(manager.events)

@@ -50,10 +50,9 @@ class Data_Manager:
                 "type": res_obj.type
             }
         
-        # Añadimos los Atributos Extras
 
-        res_dict.update(res_obj.attributes)
-        output["resources"][res_id] = res_dict
+            res_dict.update(res_obj.attributes)
+            output["resources"][res_id] = res_dict
 
         # Convertimos los objetos Event a diccionarios
         for ev in event_list:
